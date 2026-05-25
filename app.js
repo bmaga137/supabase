@@ -56,21 +56,21 @@ app.get('/products/:id', async (req, res) => {
 });
 
 app.post('/products', async (req, res) => {
-    const {error} = await supabase
-        .from('products')
-        .insert({
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-        })
-    if (error) {
-        res.send(error);
-    }
-    res.send("created!!");
-    console.log("retorno "+ req.body.name);
-    console.log("retorno "+ req.body.description);
-    console.log("retorno "+ req.body.price);
+    // 1. Destruturar o body deixa o código mais limpo e seguro
+    const { name, description, price } = req.body;
 
+    const { error } = await supabase
+        .from('products')
+        .insert({ name, description, price });
+
+    // 2. IMPORTANTE: Use o 'return' para parar a execução aqui se der erro
+    if (error) {
+        console.error("Erro ao inserir no Supabase:", error);
+        return res.status(500).json({ message: "Erro ao criar produto", details: error });
+    }
+
+    // 3. Se não deu erro, envia o status de sucesso (201 Created)
+    return res.status(201).send("created!!");
 });
 
 app.put('/products/:id', async (req, res) => {
