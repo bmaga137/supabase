@@ -57,11 +57,11 @@ app.get('/products/:id', async (req, res) => {
 
 app.post('/products', async (req, res) => {
     // 1. Destruturar o body deixa o código mais limpo e seguro
-    const { name, description, price } = req.body;
+    const { name, price } = req.body;
 
     const { error } = await supabase
         .from('products')
-        .insert({ name, description, price });
+        .insert({ name, price });
 
     // 2. IMPORTANTE: Use o 'return' para parar a execução aqui se der erro
     if (error) {
